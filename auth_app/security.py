@@ -2,8 +2,24 @@ from datetime import datetime, timedelta, timezone
 
 import jwt
 from fastapi import HTTPException, status
+from pwdlib import PasswordHash
 
-from auth_app.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from auth_app.config import (
+    SECRET_KEY,
+    ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+)
+
+
+password_hash = PasswordHash.recommended()
+
+
+def hash_password(password: str) -> str:
+    return password_hash.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return password_hash.verify(plain_password, hashed_password)
 
 
 class JWTService:
@@ -19,14 +35,16 @@ class JWTService:
             minutes=self.access_token_expire_minutes
         )
 
-        token_data.update({
-            "exp": expire_time
-        })
+        token_data.update(
+            {
+                "exp": expire_time,
+            }
+        )
 
         encoded_jwt = jwt.encode(
             token_data,
             self.secret_key,
-            algorithm=self.algorithm
+            algorithm=self.algorithm,
         )
 
         return encoded_jwt
@@ -36,7 +54,7 @@ class JWTService:
             payload = jwt.decode(
                 token,
                 self.secret_key,
-                algorithms=[self.algorithm]
+                algorithms=[self.algorithm],
             )
 
             username = payload.get("sub")
@@ -44,7 +62,7 @@ class JWTService:
             if username is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid token"
+                    detail="Invalid token",
                 )
 
             return username
@@ -52,13 +70,13 @@ class JWTService:
         except jwt.ExpiredSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token has expired"
+                detail="Token has expired",
             )
 
         except jwt.InvalidTokenError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid token"
+                detail="Invalid token",
             )
 
 
