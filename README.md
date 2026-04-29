@@ -167,7 +167,7 @@ Request body:
 
 ```json
 {
-  "username": "ishwor",
+  "username": "sabita",
   "password": "secret123"
 }
 ```
@@ -177,7 +177,7 @@ Response:
 ```json
 {
   "message": "User registered successfully",
-  "username": "ishwor"
+  "username": "sabita"
 }
 ```
 
@@ -191,7 +191,7 @@ Request body:
 
 ```json
 {
-  "username": "ishwor",
+  "username": "sabita",
   "password": "secret123"
 }
 ```
@@ -220,7 +220,7 @@ Response:
 {
   "logged_in": true,
   "message": "You are logged in",
-  "username": "ishwor"
+  "username": "sabita"
 }
 ```
 
@@ -235,7 +235,7 @@ Response:
 ```json
 {
   "users": [
-    "ishwor"
+    "sabita"
   ]
 }
 ```
